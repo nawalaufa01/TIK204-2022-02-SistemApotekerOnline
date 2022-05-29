@@ -1,10 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_apotek/authService.dart';
+import 'package:my_apotek/halamanlogin.dart';
 
 class HalamanProfil extends StatelessWidget {
   const HalamanProfil({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+    String? name;
+
+    String? email;
+    String? alamat;
+    if (auth.currentUser != null) {
+      name = auth.currentUser!.displayName;
+      email = auth.currentUser!.email;
+      alamat = auth.currentUser!.photoURL;
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -14,10 +27,6 @@ class HalamanProfil extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'PASIEN',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -38,40 +47,31 @@ class HalamanProfil extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text('Nama Lengkap'),
                       Text(
-                        'Nama               : Yasmina Elma\nUmur                : 20 Tahun\nTanggal lahir   : 06 Okt 2001\nGol Darah         : A+\nJenis Kelamin : Perempuan',
+                        '$name',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text('Alamat Email'),
+                      Text(
+                        '$email',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text('Lokasi'),
+                      Text(
+                        '$alamat',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Lokasi Anda',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 15, bottom: 50),
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  color: Colors.grey.shade400,
-                  child: Text(
-                    'LR. T Abdullah No A2 Baet, Aceh Besar',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  width: double.infinity,
-                  color: Colors.grey.shade400,
-                  child: Text(
-                    'TAMBAH AKUN',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
@@ -80,9 +80,24 @@ class HalamanProfil extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 15),
                   width: double.infinity,
                   color: Colors.grey.shade400,
-                  child: Text(
-                    'TAMBAH AKUN',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: (() => AuthServices.signOut().then((value) =>
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Halamanlogin())))),
+                    child: Text(
+                      'LOG OUT',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
                   ),
                 ),
               ],
